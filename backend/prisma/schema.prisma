@@ -1,0 +1,167 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  EMPLOYEE
+  ADMIN
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Status {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  WAITING_FOR_USER
+  RESOLVED
+  CLOSED
+  REJECTED
+}
+
+model User {
+  id                String         @id @default(uuid())
+  email             String         @unique
+  passwordHash      String
+  name              String
+  employeeId        String         @unique // e.g. EMP-10243
+  role              Role           @default(EMPLOYEE)
+  
+  departmentId      String
+  department        Department     @relation(fields: [departmentId], references: [id])
+  
+  refreshTokens     RefreshToken[]
+  createdComplaints Complaint[]    @relation("CreatedComplaints")
+  assignedComplaints Complaint[]   @relation("AssignedComplaints")
+  comments          Comment[]
+  timelineEvents    TimelineEvent[]
+  auditLogs         AuditLog[]
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([email])
+  @@index([employeeId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+}
+
+model Department {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  users      User[]
+  complaints Complaint[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Category {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  complaints Complaint[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Complaint {
+  id                 String          @id @default(uuid())
+  ticketNo           String          @unique // e.g. COMP-1782049
+  
+  employeeId         String
+  employee           User            @relation("CreatedComplaints", fields: [employeeId], references: [id])
+  
+  departmentId       String
+  department         Department      @relation(fields: [departmentId], references: [id])
+  
+  categoryId         String
+  category           Category        @relation(fields: [categoryId], references: [id])
+  
+  subject            String
+  description        String
+  priority           Priority        @default(MEDIUM)
+  status             Status          @default(OPEN)
+  
+  assignedEngineerId String?
+  assignedEngineer   User?           @relation("AssignedComplaints", fields: [assignedEngineerId], references: [id])
+  
+  attachments        String[]        // URLs for files stored in Cloudinary
+  resolutionNotes    String?
+  isDeleted          Boolean         @default(false)
+  
+  comments           Comment[]
+  timelineEvents     TimelineEvent[]
+
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([ticketNo])
+  @@index([employeeId])
+  @@index([assignedEngineerId])
+  @@index([status])
+  @@index([priority])
+  @@index([departmentId])
+  @@index([categoryId])
+}
+
+model Comment {
+  id          String    @id @default(uuid())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  content     String
+  isInternal  Boolean   @default(false) // If true, only visible to IT Admins
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([complaintId])
+}
+
+model TimelineEvent {
+  id          String    @id @default(uuid())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  message     String
+  createdAt   DateTime  @default(now())
+
+  @@index([complaintId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // e.g. "USER_LOGIN", "COMPLAINT_ASSIGNED", "TICKET_DELETED"
+  details   String   // JSON string or long message detailing variables changed
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([createdAt])
+}
