@@ -39,9 +39,13 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/multer": "^1.4.12",
     "@types/node": "^20.11.30",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5",
+    "eslint": "^8.57.0",
     "prisma": "^5.12.1",
-    "eslint": "^8.57.0"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
