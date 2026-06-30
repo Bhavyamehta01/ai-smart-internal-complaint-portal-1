@@ -6,8 +6,21 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('[Seed]: Starting database seeding...');
 
-  // 1. Seed Departments
-  const departmentsData = ['IT', 'HR', 'Finance', 'Operations', 'Sales'];
+  // 0. Clean up existing data to avoid FK constraint violations
+  await prisma.comment.deleteMany({});
+  await prisma.timelineEvent.deleteMany({});
+  await prisma.complaint.deleteMany({});
+
+  // 1. Seed AAI Departments
+  const departmentsData = [
+    'Operations',
+    'Air Traffic Control (ATC)',
+    'Communication, Navigation & Surveillance (CNS)',
+    'Information Technology (IT)',
+    'Corporate Planning & Management Services (CP&MS)',
+    'Human Resources (HR)',
+    'Administration',
+  ];
   const departments: Record<string, any> = {};
 
   for (const name of departmentsData) {
@@ -42,25 +55,38 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash('adminpassword', 10);
   const employeePasswordHash = await bcrypt.hash('employeepassword', 10);
 
-  // 4. Seed IT Admin
+  // 4. Remove any stale/extra test users (besides the two official accounts)
+  await prisma.user.deleteMany({
+    where: {
+      email: { notIn: ['admin@portal.com', 'employee@portal.com'] },
+    },
+  });
+
+  // 5. Seed IT Admin — KRISH MEHTA
   const admin = await prisma.user.upsert({
     where: { email: 'admin@portal.com' },
-    update: { name: 'KRISH MEHTA' },
+    update: {
+      name: 'KRISH MEHTA',
+      departmentId: departments['Information Technology (IT)'].id,
+    },
     create: {
       email: 'admin@portal.com',
       passwordHash: adminPasswordHash,
       name: 'KRISH MEHTA',
       employeeId: 'EMP-00001',
       role: 'ADMIN',
-      departmentId: departments['IT'].id,
+      departmentId: departments['Information Technology (IT)'].id,
     },
   });
   console.log(`[Seed]: Seeded IT Admin Account: ${admin.email}`);
 
-  // 5. Seed general Employee 1
+  // 6. Seed Employee — BHAVYA MEHTA
   const employee = await prisma.user.upsert({
     where: { email: 'employee@portal.com' },
-    update: { name: 'BHAVYA MEHTA' },
+    update: {
+      name: 'BHAVYA MEHTA',
+      departmentId: departments['Operations'].id,
+    },
     create: {
       email: 'employee@portal.com',
       passwordHash: employeePasswordHash,
@@ -71,21 +97,6 @@ async function main() {
     },
   });
   console.log(`[Seed]: Seeded Employee Account: ${employee.email}`);
-
-  // 6. Seed Employee 2
-  const employee2 = await prisma.user.upsert({
-    where: { email: 'jane@portal.com' },
-    update: {},
-    create: {
-      email: 'jane@portal.com',
-      passwordHash: employeePasswordHash,
-      name: 'Jane Smith',
-      employeeId: 'EMP-00003',
-      role: 'EMPLOYEE',
-      departmentId: departments['Finance'].id,
-    },
-  });
-  console.log(`[Seed]: Seeded Employee Account: ${employee2.email}`);
 
   // 7. Seed sample complaints with realistic June 2026 dates
   const complaintsData = [
@@ -108,8 +119,8 @@ async function main() {
       description:
         'I have been unable to connect to the company VPN since yesterday evening. I am working remotely and this is blocking me from accessing all internal resources. The error message says Authentication failed. I have tried reinstalling the VPN client.',
       categoryId: categories['Network'].id,
-      departmentId: departments['Finance'].id,
-      employeeId: employee2.id,
+      departmentId: departments['Information Technology (IT)'].id,
+      employeeId: employee.id,
       priority: 'CRITICAL' as const,
       status: 'ASSIGNED' as const,
       assignedEngineerId: admin.id,
@@ -119,10 +130,10 @@ async function main() {
       ticketNo: 'COMP-1001003',
       subject: 'Microsoft Office license expired',
       description:
-        'My Microsoft Office license has expired and I am now unable to edit any Word or Excel documents. I receive a subscription expired warning every time I open any Office application. This is preventing me from completing my financial reports.',
+        'My Microsoft Office license has expired and I am now unable to edit any Word or Excel documents. I receive a subscription expired warning every time I open any Office application. This is preventing me from completing my daily work.',
       categoryId: categories['Software'].id,
-      departmentId: departments['Finance'].id,
-      employeeId: employee2.id,
+      departmentId: departments['Administration'].id,
+      employeeId: employee.id,
       priority: 'MEDIUM' as const,
       status: 'OPEN' as const,
       createdAt: new Date('2026-06-11T14:00:00Z'),
@@ -133,7 +144,7 @@ async function main() {
       description:
         'The shared printer on the 3rd floor is not connecting to the network. Multiple employees have reported being unable to print documents. The printer shows as offline in the print queue. We have already tried power cycling the printer.',
       categoryId: categories['Hardware'].id,
-      departmentId: departments['HR'].id,
+      departmentId: departments['Human Resources (HR)'].id,
       employeeId: employee.id,
       priority: 'MEDIUM' as const,
       status: 'RESOLVED' as const,
@@ -146,7 +157,7 @@ async function main() {
       description:
         'I believe my corporate email account has been compromised. I noticed several outgoing emails I did not send, and my password was changed without my knowledge. This is a critical security incident that needs immediate attention.',
       categoryId: categories['Access / Permissions'].id,
-      departmentId: departments['Sales'].id,
+      departmentId: departments['Corporate Planning & Management Services (CP&MS)'].id,
       employeeId: employee.id,
       priority: 'CRITICAL' as const,
       status: 'CLOSED' as const,
@@ -160,7 +171,7 @@ async function main() {
       description:
         'Internet speed at my workstation has been extremely slow for the past week. Pages take 30+ seconds to load and video calls keep dropping. Other workstations nearby seem to work fine.',
       categoryId: categories['Network'].id,
-      departmentId: departments['Operations'].id,
+      departmentId: departments['Air Traffic Control (ATC)'].id,
       employeeId: employee.id,
       priority: 'LOW' as const,
       status: 'OPEN' as const,
@@ -169,33 +180,24 @@ async function main() {
   ];
 
   for (const data of complaintsData) {
-    const existing = await prisma.complaint.findUnique({ where: { ticketNo: data.ticketNo } });
-    if (!existing) {
-      const { createdAt, ...rest } = data;
-      await prisma.complaint.create({
-        data: {
-          ...rest,
-          createdAt,
-          timelineEvents: {
-            create: [
-              { userId: data.employeeId, message: 'Complaint submitted successfully.', createdAt },
-              ...(data.assignedEngineerId
-                ? [{ userId: admin.id, message: `Complaint assigned to ${admin.name}.`, createdAt: new Date(createdAt.getTime() + 30 * 60 * 1000) }]
-                : []),
-              ...(data.status === 'RESOLVED' || data.status === 'CLOSED'
-                ? [{ userId: admin.id, message: `Status updated to "${data.status}".`, createdAt: new Date(createdAt.getTime() + 2 * 24 * 60 * 60 * 1000) }]
-                : []),
-            ],
-          },
+    const { createdAt, ...rest } = data;
+    await prisma.complaint.create({
+      data: {
+        ...rest,
+        createdAt,
+        timelineEvents: {
+          create: [
+            { userId: data.employeeId, message: 'Complaint submitted successfully.', createdAt },
+            ...(data.assignedEngineerId
+              ? [{ userId: admin.id, message: `Complaint assigned to ${admin.name}.`, createdAt: new Date(createdAt.getTime() + 30 * 60 * 1000) }]
+              : []),
+            ...(data.status === 'RESOLVED' || data.status === 'CLOSED'
+              ? [{ userId: admin.id, message: `Status updated to "${data.status}".`, createdAt: new Date(createdAt.getTime() + 2 * 24 * 60 * 60 * 1000) }]
+              : []),
+          ],
         },
-      });
-    } else {
-      // Update createdAt for existing complaints to June 2026 dates
-      await prisma.complaint.update({
-        where: { ticketNo: data.ticketNo },
-        data: { createdAt: data.createdAt },
-      });
-    }
+      },
+    });
   }
   console.log(`[Seed]: Seeded ${complaintsData.length} sample complaints.`);
 

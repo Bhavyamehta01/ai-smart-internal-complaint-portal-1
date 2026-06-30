@@ -26,36 +26,16 @@ interface HeaderProps {
   onMobileMenuOpen: () => void;
 }
 
-// Mock notifications data
-const MOCK_NOTIFICATIONS = [
-  {
-    id: '1',
-    icon: ClipboardList,
-    iconColor: 'text-blue-500',
-    title: 'Complaint Assigned',
-    message: 'COMP-1001001 has been assigned to IT Admin User.',
-    time: '2 min ago',
-    unread: true,
-  },
-  {
-    id: '2',
-    icon: CheckCircle2,
-    iconColor: 'text-green-500',
-    title: 'Complaint Resolved',
-    message: 'COMP-1001004 has been marked as Resolved.',
-    time: '1 hr ago',
-    unread: true,
-  },
-  {
-    id: '3',
-    icon: MessageSquare,
-    iconColor: 'text-purple-500',
-    title: 'New Comment',
-    message: 'IT Admin User added a comment on COMP-1001002.',
-    time: '3 hr ago',
-    unread: false,
-  },
-];
+// Notifications — start empty (real notifications will come from the backend)
+const MOCK_NOTIFICATIONS: {
+  id: string;
+  icon: React.ElementType;
+  iconColor: string;
+  title: string;
+  message: string;
+  time: string;
+  unread: boolean;
+}[] = [];
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light', icon: Sun },
@@ -164,31 +144,33 @@ export default function Header({ onMobileMenuOpen }: HeaderProps) {
                   )}
                 </div>
                 <div className="divide-y divide-border max-h-72 overflow-y-auto">
-                  {notifications.map((n) => (
-                    <div
-                      key={n.id}
-                      className={cn(
-                        'flex items-start gap-3 px-4 py-3 hover:bg-accent/50 transition-colors cursor-pointer',
-                        n.unread && 'bg-primary/5'
-                      )}
-                      onClick={() => setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, unread: false } : x))}
-                    >
-                      <n.icon className={cn('w-4 h-4 mt-0.5 flex-shrink-0', n.iconColor)} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-xs font-medium text-foreground">{n.title}</p>
-                          {n.unread && <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
-                        <p className="text-[10px] text-muted-foreground/70 mt-1">{n.time}</p>
-                      </div>
+                  {notifications.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+                      <Bell className="w-6 h-6 text-muted-foreground/40 mb-2" />
+                      <p className="text-xs text-muted-foreground">No notifications</p>
                     </div>
-                  ))}
-                </div>
-                <div className="px-4 py-2.5 border-t border-border">
-                  <button className="text-xs text-primary hover:text-primary/80 transition-colors w-full text-center">
-                    View all notifications
-                  </button>
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        className={cn(
+                          'flex items-start gap-3 px-4 py-3 hover:bg-accent/50 transition-colors cursor-pointer',
+                          n.unread && 'bg-primary/5'
+                        )}
+                        onClick={() => setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, unread: false } : x))}
+                      >
+                        <n.icon className={cn('w-4 h-4 mt-0.5 flex-shrink-0', n.iconColor)} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs font-medium text-foreground">{n.title}</p>
+                            {n.unread && <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
+                          <p className="text-[10px] text-muted-foreground/70 mt-1">{n.time}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </>

@@ -30,20 +30,20 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 const PRIORITY_COLORS: Record<string, string> = {
-  LOW: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-  MEDIUM: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  HIGH: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  CRITICAL: 'bg-red-500/20 text-red-300 border-red-500/30',
+  LOW: 'bg-slate-500/10 text-slate-500 border-slate-500/20 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
+  MEDIUM: 'bg-blue-500/10 text-blue-600 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
+  HIGH: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
+  CRITICAL: 'bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  OPEN: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-  ASSIGNED: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  IN_PROGRESS: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  WAITING_FOR_USER: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  RESOLVED: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  CLOSED: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-  REJECTED: 'bg-red-500/20 text-red-300 border-red-500/30',
+  OPEN: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
+  ASSIGNED: 'bg-purple-500/10 text-purple-600 border-purple-500/20 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
+  IN_PROGRESS: 'bg-blue-500/10 text-blue-600 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
+  WAITING_FOR_USER: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
+  RESOLVED: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
+  CLOSED: 'bg-slate-500/10 text-slate-500 border-slate-500/20 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
+  REJECTED: 'bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30',
 };
 
 const ALL_STATUSES = [
@@ -142,7 +142,7 @@ export default function AdminComplaintDetailPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -151,9 +151,9 @@ export default function AdminComplaintDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-3">
-          <AlertCircle className="w-8 h-8 text-red-400 mx-auto" />
-          <p className="text-red-400 text-sm">{error}</p>
-          <Link href="/admin/dashboard" className="text-purple-400 hover:text-purple-300 text-xs">
+          <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
+          <p className="text-red-500 text-sm">{error}</p>
+          <Link href="/admin/dashboard" className="text-primary hover:text-primary/80 text-xs">
             ← Back to Dashboard
           </Link>
         </div>
@@ -164,13 +164,13 @@ export default function AdminComplaintDetailPage() {
   if (!complaint) return null;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-950 via-slate-950 to-black">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           <Link
             href="/admin/dashboard"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Admin
@@ -184,7 +184,7 @@ export default function AdminComplaintDetailPage() {
             </span>
             <button
               onClick={fetchAll}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>
@@ -194,7 +194,7 @@ export default function AdminComplaintDetailPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             {error}
           </div>
@@ -202,10 +202,10 @@ export default function AdminComplaintDetailPage() {
 
         {/* Title */}
         <div>
-          <p className="font-mono text-xs text-slate-500 mb-1">{complaint.ticketNo}</p>
-          <h1 className="text-xl font-bold text-white">{complaint.subject}</h1>
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-400">
-            <span>By <span className="text-white">{complaint.employee?.name}</span> ({complaint.employee?.employeeId})</span>
+          <p className="font-mono text-xs text-muted-foreground mb-1">{complaint.ticketNo}</p>
+          <h1 className="text-xl font-bold text-foreground">{complaint.subject}</h1>
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-muted-foreground">
+            <span>By <span className="text-foreground font-medium">{complaint.employee?.name}</span> ({complaint.employee?.employeeId})</span>
             <span>·</span>
             <span>{complaint.department?.name}</span>
             <span>·</span>
@@ -219,27 +219,27 @@ export default function AdminComplaintDetailPage() {
           {/* Left: Description + Comments */}
           <div className="lg:col-span-2 space-y-5">
             {/* Description */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h2 className="text-sm font-semibold text-white mb-3">Description</h2>
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h2 className="text-sm font-semibold text-foreground mb-3">Description</h2>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
                 {complaint.description}
               </p>
               {complaint.resolutionNotes && (
-                <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-xs font-medium text-emerald-400 mb-2 flex items-center gap-1.5">
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Resolution Notes
                   </p>
-                  <p className="text-sm text-slate-300 leading-relaxed">{complaint.resolutionNotes}</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{complaint.resolutionNotes}</p>
                 </div>
               )}
               {complaint.attachments?.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-xs font-medium text-slate-400 mb-2 flex items-center gap-1.5">
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
                     <Paperclip className="w-3.5 h-3.5" /> Attachments
                   </p>
                   {complaint.attachments.map((url: string, i: number) => (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors mb-1">
+                      className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors mb-1">
                       <ExternalLink className="w-3 h-3" /> Attachment {i + 1}
                     </a>
                   ))}
@@ -248,34 +248,34 @@ export default function AdminComplaintDetailPage() {
             </div>
 
             {/* Comments */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-purple-400" />
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-primary" />
                 Comments ({complaint.comments?.length ?? 0})
               </h2>
               {complaint.comments?.length > 0 ? (
                 <div className="space-y-3 mb-5">
                   {complaint.comments.map((c: any) => (
                     <div key={c.id}
-                      className={`p-3.5 rounded-xl border ${c.isInternal ? 'bg-purple-500/5 border-purple-500/15' : 'bg-white/[0.02] border-white/5'}`}>
+                      className={`p-3.5 rounded-xl border ${c.isInternal ? 'bg-purple-500/5 border-purple-500/15' : 'bg-muted/30 border-border'}`}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center">
-                            {c.user.role === 'ADMIN' ? <Shield className="w-2.5 h-2.5 text-purple-400" /> : <User className="w-2.5 h-2.5 text-indigo-400" />}
+                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                            {c.user.role === 'ADMIN' ? <Shield className="w-2.5 h-2.5 text-primary" /> : <User className="w-2.5 h-2.5 text-primary" />}
                           </div>
-                          <span className="text-xs font-medium text-white">{c.user.name}</span>
+                          <span className="text-xs font-medium text-foreground">{c.user.name}</span>
                           {c.isInternal && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/20">Internal</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">Internal</span>
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-600">{fmtDate(c.createdAt)}</span>
+                        <span className="text-[10px] text-muted-foreground">{fmtDate(c.createdAt)}</span>
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{c.content}</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed">{c.content}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-500 mb-4">No comments yet.</p>
+                <p className="text-xs text-muted-foreground mb-4">No comments yet.</p>
               )}
 
               {/* Add Comment */}
@@ -285,22 +285,22 @@ export default function AdminComplaintDetailPage() {
                   onChange={(e) => setComment(e.target.value)}
                   rows={3}
                   placeholder="Add a comment..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30 outline-none text-white text-sm transition-all placeholder:text-slate-600 resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground resize-none"
                 />
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isInternal}
                       onChange={(e) => setIsInternal(e.target.checked)}
-                      className="rounded border-white/20 bg-slate-900"
+                      className="rounded border-input bg-background"
                     />
                     Internal note (not visible to employee)
                   </label>
                   <button
                     onClick={handleComment}
                     disabled={commenting || !comment.trim()}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors disabled:opacity-50"
                   >
                     {commenting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     Post
@@ -313,14 +313,14 @@ export default function AdminComplaintDetailPage() {
           {/* Right: Actions + Timeline */}
           <div className="space-y-4">
             {/* Status Update */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                 Update Status
               </h3>
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900/60 border border-white/10 focus:border-purple-500 outline-none text-sm text-white mb-3"
+                className="w-full px-3 py-2 rounded-xl bg-background border border-input focus:border-primary outline-none text-sm text-foreground mb-3"
               >
                 {ALL_STATUSES.map((s) => (
                   <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
@@ -332,29 +332,29 @@ export default function AdminComplaintDetailPage() {
                   onChange={(e) => setResolutionNotes(e.target.value)}
                   rows={2}
                   placeholder="Resolution notes..."
-                  className="w-full px-3 py-2 rounded-xl bg-slate-900/60 border border-white/10 focus:border-purple-500 outline-none text-sm text-white transition-all placeholder:text-slate-600 resize-none mb-3"
+                  className="w-full px-3 py-2 rounded-xl bg-background border border-input focus:border-primary outline-none text-sm text-foreground transition-all placeholder:text-muted-foreground resize-none mb-3"
                 />
               )}
               <button
                 onClick={handleStatusUpdate}
                 disabled={updatingStatus || newStatus === complaint.status}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors disabled:opacity-50"
               >
-                {updatingStatus ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                {updatingStatus ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary-foreground" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                 Update Status
               </button>
             </div>
 
             {/* Assign */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
                 <UserCheck className="w-3.5 h-3.5" />
                 Assign Engineer
               </h3>
               <select
                 value={selectedEngineer}
                 onChange={(e) => setSelectedEngineer(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900/60 border border-white/10 focus:border-purple-500 outline-none text-sm text-white mb-3"
+                className="w-full px-3 py-2 rounded-xl bg-background border border-input focus:border-primary outline-none text-sm text-foreground mb-3"
               >
                 <option value="">Select engineer</option>
                 {users.map((u: any) => (
@@ -366,16 +366,16 @@ export default function AdminComplaintDetailPage() {
               <button
                 onClick={handleAssign}
                 disabled={assigning || !selectedEngineer}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors disabled:opacity-50"
               >
-                {assigning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserCheck className="w-3.5 h-3.5" />}
+                {assigning ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary-foreground" /> : <UserCheck className="w-3.5 h-3.5" />}
                 Assign
               </button>
             </div>
 
             {/* Details */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Details</h3>
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Details</h3>
               <div className="space-y-2.5 text-xs">
                 {[
                   ['Category', complaint.category?.name],
@@ -386,16 +386,16 @@ export default function AdminComplaintDetailPage() {
                   ['Updated', fmtDate(complaint.updatedAt)],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between gap-2">
-                    <span className="text-slate-500">{label}</span>
-                    <span className="text-white text-right">{value}</span>
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="text-foreground text-right">{value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Timeline */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
                 Timeline
               </h3>
@@ -403,20 +403,20 @@ export default function AdminComplaintDetailPage() {
                 {complaint.timelineEvents?.map((event: any, i: number) => (
                   <div key={event.id} className="flex gap-2.5">
                     <div className="flex flex-col items-center">
-                      <div className="w-5 h-5 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center flex-shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center flex-shrink-0">
                         {event.user.role === 'ADMIN' ? (
-                          <Shield className="w-2.5 h-2.5 text-purple-400" />
+                          <Shield className="w-2.5 h-2.5 text-primary" />
                         ) : (
-                          <User className="w-2.5 h-2.5 text-indigo-400" />
+                          <User className="w-2.5 h-2.5 text-primary" />
                         )}
                       </div>
                       {i < (complaint.timelineEvents?.length ?? 0) - 1 && (
-                        <div className="w-px flex-1 bg-white/5 mt-1" />
+                        <div className="w-px flex-1 bg-border mt-1" />
                       )}
                     </div>
                     <div className="pb-2.5">
-                      <p className="text-xs text-slate-300">{event.message}</p>
-                      <p className="text-[10px] text-slate-600 mt-0.5">{fmtDate(event.createdAt)}</p>
+                      <p className="text-xs text-foreground/80">{event.message}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{fmtDate(event.createdAt)}</p>
                     </div>
                   </div>
                 ))}

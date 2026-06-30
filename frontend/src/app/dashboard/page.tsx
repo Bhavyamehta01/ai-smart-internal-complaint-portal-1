@@ -96,29 +96,29 @@ function ChatWidget({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
-      className="fixed bottom-24 right-6 w-80 z-50 rounded-2xl bg-slate-900 border border-white/10 shadow-2xl flex flex-col overflow-hidden"
+      className="fixed bottom-24 right-6 w-80 z-50 rounded-2xl bg-popover border border-border shadow-xl flex flex-col overflow-hidden"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border-b border-white/10">
+      <div className="flex items-center justify-between px-4 py-3 bg-primary/10 border-b border-border">
         <div className="flex items-center gap-2">
-          <Bot className="w-4 h-4 text-indigo-400" />
-          <span className="text-sm font-semibold text-white">IT Support Assistant</span>
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <Bot className="w-4 h-4 text-primary" />
+          <span className="text-sm font-semibold text-foreground">IT Support Assistant</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
         </div>
-        <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+        <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 max-h-72">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 max-h-72 bg-popover">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[80%] text-xs rounded-xl px-3 py-2 leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-800 text-slate-200 border border-white/5'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-foreground border border-border'
               }`}
             >
               {msg.text}
@@ -127,8 +127,8 @@ function ChatWidget({ onClose }: { onClose: () => void }) {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-slate-800 border border-white/5 rounded-xl px-3 py-2">
-              <Loader2 className="w-3 h-3 text-indigo-400 animate-spin" />
+            <div className="bg-muted border border-border rounded-xl px-3 py-2">
+              <Loader2 className="w-3 h-3 text-primary animate-spin" />
             </div>
           </div>
         )}
@@ -136,19 +136,19 @@ function ChatWidget({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 border-t border-border bg-popover">
         <div className="flex items-center gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && send()}
             placeholder="Ask me anything..."
-            className="flex-1 text-xs bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:border-indigo-500"
+            className="form-input flex-1 text-xs"
           />
           <button
             onClick={send}
             disabled={loading || !input.trim()}
-            className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors disabled:opacity-50"
+            className="p-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-colors disabled:opacity-50"
           >
             <Send className="w-3 h-3" />
           </button>
@@ -219,30 +219,30 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
-              <ClipboardList className="w-4 h-4 text-indigo-400" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <ClipboardList className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-semibold text-white text-sm">Complaint Portal</span>
+            <span className="font-semibold text-foreground text-sm">Complaint Portal</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 hidden sm:block">
-              {user.name} · <span className="text-indigo-400">{user.department}</span>
+            <span className="text-xs text-muted-foreground hidden sm:block">
+              {user.name} · <span className="text-primary font-medium">{user.department}</span>
             </span>
             <Link
               href="/complaints/new"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               New Complaint
             </Link>
             <button
               onClick={logout}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
@@ -259,18 +259,18 @@ export default function DashboardPage() {
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
           <div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-foreground">
               Welcome back, {user.name.split(' ')[0]}! 👋
             </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              ID: <span className="text-indigo-400 font-mono">{user.employeeId}</span> ·{' '}
+            <p className="text-muted-foreground text-sm mt-1">
+              ID: <span className="text-primary font-mono font-medium">{user.employeeId}</span> ·{' '}
               {user.department}
             </p>
           </div>
           <button
             onClick={fetchData}
             disabled={loading}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 text-slate-400 hover:text-white hover:border-white/20 text-xs transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-accent hover:border-border/80 text-xs transition-colors"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -285,21 +285,21 @@ export default function DashboardPage() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-4"
         >
           {[
-            { label: 'Total Tickets', value: stats.total, icon: FileText, color: 'indigo' },
+            { label: 'Total Tickets', value: stats.total, icon: FileText, color: 'primary' },
             { label: 'Open', value: stats.open, icon: AlertCircle, color: 'amber' },
             { label: 'In Progress', value: stats.inProgress, icon: Clock, color: 'blue' },
             { label: 'Resolved', value: stats.resolved, icon: CheckCircle2, color: 'emerald' },
           ].map((card) => (
             <div
               key={card.label}
-              className="rounded-2xl bg-white/[0.03] border border-white/5 p-5 space-y-3"
+              className="rounded-2xl bg-card text-card-foreground border border-border p-5 space-y-3 shadow-sm"
             >
-              <div className={`w-9 h-9 rounded-xl bg-${card.color}-500/10 flex items-center justify-center`}>
-                <card.icon className={`w-4 h-4 text-${card.color}-400`} />
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                <card.icon className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">{card.value}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{card.label}</p>
+                <p className="text-2xl font-bold text-foreground">{card.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{card.label}</p>
               </div>
             </div>
           ))}
@@ -310,14 +310,14 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden"
+          className="rounded-2xl bg-card text-card-foreground border border-border overflow-hidden shadow-sm"
         >
           {/* Table Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-            <h2 className="text-sm font-semibold text-white">My Complaints</h2>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h2 className="text-sm font-semibold text-foreground">My Complaints</h2>
             <Link
               href="/complaints/new"
-              className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
             >
               <Plus className="w-3.5 h-3.5" />
               New Complaint
@@ -325,15 +325,15 @@ export default function DashboardPage() {
           </div>
 
           {/* Status Filter Tabs */}
-          <div className="flex items-center gap-1 px-6 py-3 border-b border-white/5 overflow-x-auto">
+          <div className="flex items-center gap-1 px-6 py-3 border-b border-border overflow-x-auto">
             {STATUS_TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                   activeTab === tab
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                 }`}
               >
                 {tab.replace(/_/g, ' ')}
@@ -343,7 +343,7 @@ export default function DashboardPage() {
 
           {/* Error state */}
           {error && (
-            <div className="flex items-center gap-2 px-6 py-4 text-red-400 text-sm">
+            <div className="flex items-center gap-2 px-6 py-4 text-red-500 text-sm">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {error}
             </div>
@@ -352,20 +352,20 @@ export default function DashboardPage() {
           {/* Loading state */}
           {loading && (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
           )}
 
           {/* Empty state */}
           {!loading && !error && complaints.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
-                <ClipboardList className="w-6 h-6 text-slate-500" />
+              <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
+                <ClipboardList className="w-6 h-6 text-muted-foreground" />
               </div>
-              <p className="text-slate-400 text-sm">No complaints found</p>
+              <p className="text-muted-foreground text-sm">No complaints found</p>
               <Link
                 href="/complaints/new"
-                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 Submit your first complaint →
               </Link>
@@ -374,18 +374,18 @@ export default function DashboardPage() {
 
           {/* Complaints list */}
           {!loading && !error && complaints.length > 0 && (
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-border">
               {complaints.map((c, i) => (
                 <motion.div
                   key={c.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors group"
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-accent/40 transition-colors group"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-xs text-slate-500">{c.ticketNo}</span>
+                      <span className="font-mono text-xs text-muted-foreground">{c.ticketNo}</span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${
                           PRIORITY_COLORS[c.priority]
@@ -401,19 +401,19 @@ export default function DashboardPage() {
                         {c.status.replace(/_/g, ' ')}
                       </span>
                     </div>
-                    <p className="text-sm text-white font-medium truncate">{c.subject}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-sm text-foreground font-medium truncate">{c.subject}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {c.category.name} · {formatDate(c.createdAt)}
                     </p>
                   </div>
                   <Link
                     href={`/complaints/${c.id}`}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs transition-colors opacity-0 group-hover:opacity-100"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent/80 text-foreground text-xs transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <Eye className="w-3.5 h-3.5" />
                     View
                   </Link>
-                  <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 </motion.div>
               ))}
             </div>
@@ -424,10 +424,10 @@ export default function DashboardPage() {
       {/* Floating Chat Button */}
       <button
         onClick={() => setChatOpen((prev) => !prev)}
-        className="fixed bottom-6 right-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5 z-40"
+        className="fixed bottom-6 right-6 w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:bg-primary/95 transition-all hover:-translate-y-0.5 z-40"
         title="AI Support Assistant"
       >
-        <Bot className="w-5 h-5 text-white" />
+        <Bot className="w-5 h-5 text-primary-foreground" />
       </button>
 
       {/* Chat Widget */}

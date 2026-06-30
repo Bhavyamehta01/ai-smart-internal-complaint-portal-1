@@ -22,25 +22,20 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 const PRIORITY_COLORS: Record<string, string> = {
-  LOW: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-  MEDIUM: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  HIGH: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  CRITICAL: 'bg-red-500/20 text-red-300 border-red-500/30',
+  LOW: 'bg-slate-500/10 text-slate-500 border-slate-500/20 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
+  MEDIUM: 'bg-blue-500/10 text-blue-600 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
+  HIGH: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
+  CRITICAL: 'bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  OPEN: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-  ASSIGNED: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  IN_PROGRESS: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  WAITING_FOR_USER: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  RESOLVED: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  CLOSED: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-  REJECTED: 'bg-red-500/20 text-red-300 border-red-500/30',
-};
-
-const TIMELINE_ICONS: Record<string, React.ReactNode> = {
-  ADMIN: <Shield className="w-3.5 h-3.5 text-purple-400" />,
-  EMPLOYEE: <User className="w-3.5 h-3.5 text-indigo-400" />,
+  OPEN: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
+  ASSIGNED: 'bg-purple-500/10 text-purple-600 border-purple-500/20 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
+  IN_PROGRESS: 'bg-blue-500/10 text-blue-600 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
+  WAITING_FOR_USER: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
+  RESOLVED: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
+  CLOSED: 'bg-slate-500/10 text-slate-500 border-slate-500/20 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
+  REJECTED: 'bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30',
 };
 
 function fmtDate(iso: string) {
@@ -100,7 +95,7 @@ export default function ComplaintDetailPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -109,9 +104,9 @@ export default function ComplaintDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-3">
-          <AlertCircle className="w-8 h-8 text-red-400 mx-auto" />
-          <p className="text-red-400 text-sm">{error}</p>
-          <Link href="/dashboard" className="text-indigo-400 hover:text-indigo-300 text-xs">
+          <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
+          <p className="text-red-500 text-sm">{error}</p>
+          <Link href="/dashboard" className="text-primary hover:text-primary/80 text-xs">
             ← Back to Dashboard
           </Link>
         </div>
@@ -122,13 +117,13 @@ export default function ComplaintDetailPage() {
   if (!complaint) return null;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
@@ -155,11 +150,11 @@ export default function ComplaintDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-3"
         >
-          <p className="font-mono text-xs text-slate-500">{complaint.ticketNo}</p>
-          <h1 className="text-2xl font-bold text-white">{complaint.subject}</h1>
-          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+          <p className="font-mono text-xs text-muted-foreground">{complaint.ticketNo}</p>
+          <h1 className="text-2xl font-bold text-foreground">{complaint.subject}</h1>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span>
-              By <span className="text-white">{complaint.employee.name}</span>
+              By <span className="text-foreground font-medium">{complaint.employee.name}</span>
             </span>
             <span>·</span>
             <span>{complaint.department.name}</span>
@@ -178,28 +173,28 @@ export default function ComplaintDetailPage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-6"
+              className="rounded-2xl bg-card border border-border p-6 shadow-sm"
             >
-              <h2 className="text-sm font-semibold text-white mb-4">Description</h2>
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+              <h2 className="text-sm font-semibold text-foreground mb-4">Description</h2>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
                 {complaint.description}
               </p>
 
               {complaint.resolutionNotes && (
-                <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-xs font-medium text-emerald-400 mb-2 flex items-center gap-1.5">
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Resolution Notes
                   </p>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-foreground/80 leading-relaxed">
                     {complaint.resolutionNotes}
                   </p>
                 </div>
               )}
 
               {complaint.attachments && complaint.attachments.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-xs font-medium text-slate-400 mb-2 flex items-center gap-1.5">
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
                     <Paperclip className="w-3.5 h-3.5" />
                     Attachments
                   </p>
@@ -210,7 +205,7 @@ export default function ComplaintDetailPage() {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                        className="flex items-center gap-2 text-xs text-primary hover:text-primary/80 transition-colors"
                       >
                         <ExternalLink className="w-3 h-3" />
                         Attachment {i + 1}
@@ -226,10 +221,10 @@ export default function ComplaintDetailPage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-6"
+              className="rounded-2xl bg-card border border-border p-6 shadow-sm"
             >
-              <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-indigo-400" />
+              <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-primary" />
                 Comments ({complaint.comments?.length ?? 0})
               </h2>
 
@@ -241,33 +236,33 @@ export default function ComplaintDetailPage() {
                       className={`p-3.5 rounded-xl border ${
                         c.isInternal
                           ? 'bg-purple-500/5 border-purple-500/15'
-                          : 'bg-white/[0.02] border-white/5'
+                          : 'bg-muted/30 border-border'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                             {c.user.role === 'ADMIN' ? (
-                              <Shield className="w-3 h-3 text-purple-400" />
+                              <Shield className="w-3 h-3 text-primary" />
                             ) : (
-                              <User className="w-3 h-3 text-indigo-400" />
+                              <User className="w-3 h-3 text-primary" />
                             )}
                           </div>
-                          <span className="text-xs font-medium text-white">{c.user.name}</span>
+                          <span className="text-xs font-medium text-foreground">{c.user.name}</span>
                           {c.isInternal && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/20">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                               Internal
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-600">{fmtDate(c.createdAt)}</span>
+                        <span className="text-[10px] text-muted-foreground">{fmtDate(c.createdAt)}</span>
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{c.content}</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed">{c.content}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-500 mb-6">No comments yet.</p>
+                <p className="text-xs text-muted-foreground mb-6">No comments yet.</p>
               )}
 
               {/* Add Comment */}
@@ -278,13 +273,13 @@ export default function ComplaintDetailPage() {
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
                     placeholder="Add a comment..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-white text-sm transition-all placeholder:text-slate-600 resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground resize-none"
                   />
                   <div className="flex justify-end">
                     <button
                       onClick={handleAddComment}
                       disabled={commenting || !comment.trim()}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors disabled:opacity-50"
                     >
                       {commenting ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -305,14 +300,14 @@ export default function ComplaintDetailPage() {
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-5"
+              className="rounded-2xl bg-card border border-border p-5 shadow-sm"
             >
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                 Details
               </h3>
               <div className="space-y-3 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Status</span>
+                  <span className="text-muted-foreground">Status</span>
                   <span
                     className={`px-2 py-0.5 rounded-full border font-medium ${STATUS_COLORS[complaint.status]}`}
                   >
@@ -320,7 +315,7 @@ export default function ComplaintDetailPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Priority</span>
+                  <span className="text-muted-foreground">Priority</span>
                   <span
                     className={`px-2 py-0.5 rounded-full border font-medium ${PRIORITY_COLORS[complaint.priority]}`}
                   >
@@ -328,22 +323,22 @@ export default function ComplaintDetailPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Category</span>
-                  <span className="text-white">{complaint.category.name}</span>
+                  <span className="text-muted-foreground">Category</span>
+                  <span className="text-foreground">{complaint.category.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Department</span>
-                  <span className="text-white">{complaint.department.name}</span>
+                  <span className="text-muted-foreground">Department</span>
+                  <span className="text-foreground">{complaint.department.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Assigned To</span>
-                  <span className="text-white">
+                  <span className="text-muted-foreground">Assigned To</span>
+                  <span className="text-foreground">
                     {complaint.assignedEngineer?.name ?? 'Unassigned'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Created</span>
-                  <span className="text-slate-300">{fmtDate(complaint.createdAt)}</span>
+                  <span className="text-muted-foreground">Created</span>
+                  <span className="text-foreground">{fmtDate(complaint.createdAt)}</span>
                 </div>
               </div>
             </motion.div>
@@ -353,9 +348,9 @@ export default function ComplaintDetailPage() {
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.05 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-5"
+              className="rounded-2xl bg-card border border-border p-5 shadow-sm"
             >
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
                 Timeline
               </h3>
@@ -363,16 +358,20 @@ export default function ComplaintDetailPage() {
                 {complaint.timelineEvents?.map((event, i) => (
                   <div key={event.id} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <div className="w-6 h-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center flex-shrink-0">
-                        {TIMELINE_ICONS[event.user.role] ?? <Clock className="w-3 h-3 text-slate-400" />}
+                      <div className="w-6 h-6 rounded-full bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                        {event.user.role === 'ADMIN' ? (
+                          <Shield className="w-3 h-3 text-primary" />
+                        ) : (
+                          <User className="w-3 h-3 text-primary" />
+                        )}
                       </div>
                       {i < (complaint.timelineEvents?.length ?? 0) - 1 && (
-                        <div className="w-px flex-1 bg-white/5 mt-1" />
+                        <div className="w-px flex-1 bg-border mt-1" />
                       )}
                     </div>
                     <div className="pb-3">
-                      <p className="text-xs text-slate-300 leading-relaxed">{event.message}</p>
-                      <p className="text-[10px] text-slate-600 mt-1">{fmtDate(event.createdAt)}</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed">{event.message}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">{fmtDate(event.createdAt)}</p>
                     </div>
                   </div>
                 ))}

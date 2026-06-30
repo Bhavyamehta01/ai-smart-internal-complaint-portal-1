@@ -34,7 +34,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN'] },
   { href: '/complaints/new', label: 'New Complaint', icon: Plus, roles: ['EMPLOYEE'] },
   { href: '/admin/users', label: 'Users', icon: Users, roles: ['ADMIN'] },
-  { href: '/admin/audit-logs', label: 'Audit Logs', icon: FileText, roles: ['ADMIN'] },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

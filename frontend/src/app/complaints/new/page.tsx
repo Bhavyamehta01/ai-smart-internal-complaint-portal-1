@@ -34,10 +34,10 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const PRIORITY_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  LOW: { bg: 'bg-slate-500/20', text: 'text-slate-300', border: 'border-slate-500/30' },
-  MEDIUM: { bg: 'bg-blue-500/20', text: 'text-blue-300', border: 'border-blue-500/30' },
-  HIGH: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30' },
-  CRITICAL: { bg: 'bg-red-500/20', text: 'text-red-300', border: 'border-red-500/30' },
+  LOW: { bg: 'bg-slate-500/10 dark:bg-slate-500/20', text: 'text-slate-600 dark:text-slate-300', border: 'border-slate-500/30' },
+  MEDIUM: { bg: 'bg-blue-500/10 dark:bg-blue-500/20', text: 'text-blue-600 dark:text-blue-300', border: 'border-blue-500/30' },
+  HIGH: { bg: 'bg-amber-500/10 dark:bg-amber-500/20', text: 'text-amber-600 dark:text-amber-300', border: 'border-amber-500/30' },
+  CRITICAL: { bg: 'bg-red-500/10 dark:bg-red-500/20', text: 'text-red-600 dark:text-red-300', border: 'border-red-500/30' },
 };
 
 export default function NewComplaintPage() {
@@ -78,7 +78,6 @@ export default function NewComplaintPage() {
   useEffect(() => {
     if (user) {
       getReferenceData().then(setRefData).catch(console.error);
-      // Pre-fill department from user's profile
     }
   }, [user]);
 
@@ -90,7 +89,7 @@ export default function NewComplaintPage() {
     }
   }, [refData, user, setValue]);
 
-  // Auto-classify with debounce (triggered when both fields have meaningful content)
+  // Auto-classify with debounce
   useEffect(() => {
     if (!subject || !description || subject.length < 5 || description.length < 20) return;
 
@@ -105,7 +104,6 @@ export default function NewComplaintPage() {
         setAiResult(classification);
         setDuplicates(dupResult.duplicates || []);
 
-        // Auto-apply AI suggestions
         if (classification.categoryId) {
           setValue('categoryId', classification.categoryId);
         }
@@ -157,43 +155,43 @@ export default function NewComplaintPage() {
   if (authLoading || !refData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center space-y-4"
         >
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+            <CheckCircle2 className="w-8 h-8 text-emerald-500" />
           </div>
-          <h2 className="text-2xl font-bold text-white">Complaint Submitted!</h2>
-          <p className="text-slate-400 text-sm">Your ticket has been created. Redirecting to dashboard...</p>
-          <Loader2 className="w-5 h-5 animate-spin text-indigo-400 mx-auto" />
+          <h2 className="text-2xl font-bold text-foreground">Complaint Submitted!</h2>
+          <p className="text-muted-foreground text-sm">Your ticket has been created. Redirecting to dashboard...</p>
+          <Loader2 className="w-5 h-5 animate-spin text-primary mx-auto" />
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Link>
-          <h1 className="text-sm font-semibold text-white">New Complaint</h1>
+          <h1 className="text-sm font-semibold text-foreground">New Complaint</h1>
         </div>
       </nav>
 
@@ -204,17 +202,17 @@ export default function NewComplaintPage() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-6 space-y-6"
+              className="rounded-2xl bg-card border border-border p-6 space-y-6 shadow-sm"
             >
               <div>
-                <h2 className="text-lg font-semibold text-white">Submit a Complaint</h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <h2 className="text-lg font-semibold text-foreground">Submit a Complaint</h2>
+                <p className="text-xs text-muted-foreground mt-1">
                   Our AI will automatically classify your complaint as you type.
                 </p>
               </div>
 
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
                   <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   {error}
                 </div>
@@ -223,38 +221,38 @@ export default function NewComplaintPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 {/* Subject */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Subject *</label>
+                  <label className="text-xs font-medium text-foreground">Subject *</label>
                   <input
                     {...register('subject')}
                     placeholder="Brief description of the issue"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-white text-sm transition-all placeholder:text-slate-600"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
                   />
                   {errors.subject && (
-                    <p className="text-xs text-red-400">{errors.subject.message}</p>
+                    <p className="text-xs text-red-500">{errors.subject.message}</p>
                   )}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Description *</label>
+                  <label className="text-xs font-medium text-foreground">Description *</label>
                   <textarea
                     {...register('description')}
                     rows={5}
                     placeholder="Provide detailed information about the issue, including when it started and what steps you've already tried..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-white text-sm transition-all placeholder:text-slate-600 resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground resize-none"
                   />
                   {errors.description && (
-                    <p className="text-xs text-red-400">{errors.description.message}</p>
+                    <p className="text-xs text-red-500">{errors.description.message}</p>
                   )}
                 </div>
 
                 {/* Category + Department */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-slate-300">Category *</label>
+                    <label className="text-xs font-medium text-foreground">Category *</label>
                     <select
                       {...register('categoryId')}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-indigo-500 outline-none text-sm text-white transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary outline-none text-sm text-foreground transition-all"
                     >
                       <option value="">Select category</option>
                       {refData.categories.map((c) => (
@@ -264,15 +262,15 @@ export default function NewComplaintPage() {
                       ))}
                     </select>
                     {errors.categoryId && (
-                      <p className="text-xs text-red-400">{errors.categoryId.message}</p>
+                      <p className="text-xs text-red-500">{errors.categoryId.message}</p>
                     )}
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-slate-300">Department *</label>
+                    <label className="text-xs font-medium text-foreground">Department *</label>
                     <select
                       {...register('departmentId')}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 focus:border-indigo-500 outline-none text-sm text-white transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-input focus:border-primary outline-none text-sm text-foreground transition-all"
                     >
                       <option value="">Select department</option>
                       {refData.departments.map((d) => (
@@ -282,15 +280,15 @@ export default function NewComplaintPage() {
                       ))}
                     </select>
                     {errors.departmentId && (
-                      <p className="text-xs text-red-400">{errors.departmentId.message}</p>
+                      <p className="text-xs text-red-500">{errors.departmentId.message}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Priority */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">
-                    Priority <span className="text-slate-500">(AI-suggested, adjustable)</span>
+                  <label className="text-xs font-medium text-foreground">
+                    Priority <span className="text-muted-foreground">(AI-suggested, adjustable)</span>
                   </label>
                   <div className="flex items-center gap-2">
                     {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const).map((p) => (
@@ -301,7 +299,7 @@ export default function NewComplaintPage() {
                         className={`flex-1 py-2 rounded-xl border text-xs font-medium transition-all ${
                           watch('priority') === p
                             ? `${PRIORITY_STYLES[p].bg} ${PRIORITY_STYLES[p].text} ${PRIORITY_STYLES[p].border} ring-1 ring-current/30`
-                            : 'bg-transparent border-white/10 text-slate-500 hover:border-white/20'
+                            : 'bg-transparent border-border text-muted-foreground hover:border-border/80 hover:text-foreground'
                         }`}
                       >
                         {p}
@@ -312,10 +310,10 @@ export default function NewComplaintPage() {
 
                 {/* File Upload */}
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-300">
-                    Attachments <span className="text-slate-500">(max 5 files, 10MB each)</span>
+                  <label className="text-xs font-medium text-foreground">
+                    Attachments <span className="text-muted-foreground">(max 5 files, 10MB each)</span>
                   </label>
-                  <label className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-white/10 hover:border-indigo-500/40 text-slate-500 hover:text-indigo-400 text-xs cursor-pointer transition-all">
+                  <label className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border hover:border-primary/40 text-muted-foreground hover:text-primary text-xs cursor-pointer transition-all">
                     <Upload className="w-4 h-4" />
                     Click to attach files
                     <input
@@ -331,19 +329,19 @@ export default function NewComplaintPage() {
                       {files.map((file, i) => (
                         <div
                           key={i}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5"
+                          className="flex items-center justify-between px-3 py-2 rounded-lg bg-muted/30 border border-border"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <Paperclip className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                            <span className="text-xs text-slate-300 truncate">{file.name}</span>
-                            <span className="text-xs text-slate-600 flex-shrink-0">
+                            <Paperclip className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                            <span className="text-xs text-foreground truncate">{file.name}</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0">
                               ({(file.size / 1024).toFixed(0)}KB)
                             </span>
                           </div>
                           <button
                             type="button"
                             onClick={() => removeFile(i)}
-                            className="text-slate-500 hover:text-red-400 transition-colors"
+                            className="text-muted-foreground hover:text-red-500 transition-colors"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -357,7 +355,7 @@ export default function NewComplaintPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {submitting ? (
                     <>
@@ -378,16 +376,16 @@ export default function NewComplaintPage() {
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              className="rounded-2xl bg-white/[0.02] border border-white/5 p-5"
+              className="rounded-2xl bg-card border border-border p-5 shadow-sm"
             >
               <div className="flex items-center gap-2 mb-4">
-                <Bot className="w-4 h-4 text-indigo-400" />
-                <h3 className="text-sm font-semibold text-white">AI Classification</h3>
-                {aiLoading && <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400 ml-auto" />}
+                <Bot className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-semibold text-foreground">AI Classification</h3>
+                {aiLoading && <Loader2 className="w-3.5 h-3.5 animate-spin text-primary ml-auto" />}
               </div>
 
               {!aiResult && !aiLoading && (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-muted-foreground">
                   Start typing a subject and description — AI will auto-classify your complaint.
                 </p>
               )}
@@ -400,17 +398,17 @@ export default function NewComplaintPage() {
                     className="space-y-3"
                   >
                     <div>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
                         Predicted Category
                       </p>
-                      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                        <span className="text-xs text-indigo-300 font-medium">{aiResult.category}</span>
+                      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20">
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-xs text-primary font-medium">{aiResult.category}</span>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
                         Predicted Priority
                       </p>
                       <div
@@ -425,8 +423,8 @@ export default function NewComplaintPage() {
                     </div>
 
                     <div>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">AI Summary</p>
-                      <p className="text-xs text-slate-400 leading-relaxed">{aiResult.summary}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">AI Summary</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed">{aiResult.summary}</p>
                     </div>
                   </motion.div>
                 )}
@@ -443,12 +441,12 @@ export default function NewComplaintPage() {
                   className="rounded-2xl bg-amber-500/5 border border-amber-500/20 p-5"
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
-                    <h3 className="text-sm font-semibold text-amber-300">
+                    <AlertTriangle className="w-4 h-4 text-amber-500" />
+                    <h3 className="text-sm font-semibold text-amber-600 dark:text-amber-300">
                       Similar Tickets Found
                     </h3>
                   </div>
-                  <p className="text-xs text-amber-300/70 mb-3">
+                  <p className="text-xs text-amber-600/70 dark:text-amber-300/70 mb-3">
                     The following existing tickets appear similar to your complaint:
                   </p>
                   <div className="space-y-2">
@@ -457,15 +455,15 @@ export default function NewComplaintPage() {
                         key={d.ticketNo}
                         className="px-3 py-2 rounded-lg bg-amber-500/5 border border-amber-500/10"
                       >
-                        <p className="font-mono text-xs text-amber-400">{d.ticketNo}</p>
-                        <p className="text-xs text-slate-400 truncate">{d.subject}</p>
-                        <p className="text-[10px] text-slate-600">
+                        <p className="font-mono text-xs text-amber-600 dark:text-amber-400">{d.ticketNo}</p>
+                        <p className="text-xs text-foreground/70 truncate">{d.subject}</p>
+                        <p className="text-[10px] text-muted-foreground">
                           {Math.round(d.similarity * 100)}% similar
                         </p>
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs text-amber-300/60 mt-3">
+                  <p className="text-xs text-amber-600/60 dark:text-amber-300/60 mt-3">
                     Consider reviewing these before submitting a new ticket.
                   </p>
                 </motion.div>
@@ -473,23 +471,23 @@ export default function NewComplaintPage() {
             </AnimatePresence>
 
             {/* Tips */}
-            <div className="rounded-2xl bg-white/[0.02] border border-white/5 p-5">
-              <h3 className="text-xs font-semibold text-slate-300 mb-3">Tips for faster resolution</h3>
-              <ul className="space-y-2 text-xs text-slate-500">
+            <div className="rounded-2xl bg-card border border-border p-5 shadow-sm">
+              <h3 className="text-xs font-semibold text-foreground mb-3">Tips for faster resolution</h3>
+              <ul className="space-y-2 text-xs text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-indigo-400 mt-0.5">✓</span>
+                  <span className="text-primary mt-0.5">✓</span>
                   Include specific error messages or codes
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-indigo-400 mt-0.5">✓</span>
+                  <span className="text-primary mt-0.5">✓</span>
                   Mention when the issue first appeared
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-indigo-400 mt-0.5">✓</span>
+                  <span className="text-primary mt-0.5">✓</span>
                   List steps you have already tried
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-indigo-400 mt-0.5">✓</span>
+                  <span className="text-primary mt-0.5">✓</span>
                   Attach screenshots if possible
                 </li>
               </ul>
